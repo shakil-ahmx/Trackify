@@ -1,36 +1,102 @@
-# Trackify — Finance Tracker
+<div align="center">
 
-A full-stack personal finance tracking app built with:
-- **Frontend**: React 18 + Vite + Tailwind CSS
-- **Backend**: Spring Boot 3.3+ + PostgreSQL
-- **Auth**: JWT (stateless, Bearer tokens)
+# 💸 Trackify — Enterprise-Grade Personal Finance Tracker
 
+[![React 18](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot_3.3+-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-## Project Structure
+A modern, highly performant, full-stack personal finance tracking application engineered for high security, seamless state management, and real-time financial insights. Designed to help users master their budgeting, track cash flow, and achieve financial freedom.
 
-```
+[View Demo](#-demo--screenshots) • [Report Bug](https://github.com/your-username/trackify/issues) • [Request Feature](https://github.com/your-username/trackify/issues)
+
+</div>
+
+---
+
+## 📑 Table of Contents
+
+- [✨ Key Features](#-key-features)
+- [🛠️ Tech Stack & Architecture](#️-tech-stack--architecture)
+- [📂 Project Structure](#-project-structure)
+- [📊 System Architecture Flow](#-system-architecture-flow)
+- [🚀 Getting Started (Local Development)](#-getting-started-local-development)
+- [🐳 Running with Docker](#-running-with-docker)
+- [🔒 API Endpoints & Security](#-api-endpoints--security)
+- [🧪 Running Tests](#-running-tests)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+
+---
+
+## ✨ Key Features
+
+- **🔐 Stateless JWT Authentication:** Secure registration and login cycle utilizing JSON Web Tokens with HTTP-ready Bearer authorization headers and password encryption via BCrypt.
+- **📈 Real-Time Financial Dashboard:** Dynamic data visualization tracking net worth, monthly cash flow, category-wise breakdown of expenses, and rolling balance trends.
+- **💰 Comprehensive Transaction Management:** Granular CRUD operations for income streams and expenses with tagging, dates, and category sorting.
+- **🛡️ Global Exception Handling & Validation:** Enterprise-ready backend error handling using `@ControllerAdvice`, custom exceptions, and Jakarta Bean Validation.
+- **⚡ High-Performance Frontend:** Built using Vite for blazing-fast HMR, Tailwind CSS for a modern aesthetic, and custom hooks/Context API for clean state management.
+- **🐳 Containerized & Cloud-Ready:** Easily deployable via Docker and Docker Compose for zero-friction environment replication.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+### **Frontend**
+- **Library:** React 18 (Concurrent features, Hooks)
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS, PostCSS
+- **State Management:** React Context API (`UserContext`), Custom Hooks (`useUserAuth`)
+- **HTTP Client:** Axios (with interceptors for automatic JWT injection and token expiration handling)
+- **Routing:** React Router v6
+
+### **Backend**
+- **Framework:** Spring Boot 3.3+ (Java 17+)
+- **Security:** Spring Security 6, JWT Filter chain, CORS configuration
+- **Data Persistence:** Spring Data JPA / Hibernate, PostgreSQL JDBC Driver
+- **Database Migration/Setup:** SQL initialization script
+- **Build System:** Apache Maven
+
+---
+
+## 📂 Project Structure
+
+```text
 trackify/
-├── backend/                    ← Spring Boot API
+├── backend/                        ← Spring Boot REST API
 │   ├── src/main/java/com/trackify/
-│   │   ├── entity/             User, Income, Expense
-│   │   ├── repository/         JPA repositories
-│   │   ├── dto/                Request/Response DTOs
-│   │   ├── service/            Business logic
-│   │   ├── controller/         REST endpoints
-│   │   ├── security/           JWT filter + utility
-│   │   └── config/             Security + CORS + static files
-│   └── src/main/resources/
-│       └── application.properties
+│   │   ├── config/                 Security config, CORS mappings, static asset filters
+│   │   ├── controller/             REST API entry points (Auth, Income, Expense, Dashboard)
+│   │   ├── dto/                    Request & Response Data Transfer Objects
+│   │   ├── entity/                 JPA Entities (User, Income, Expense)
+│   │   ├── exception/              Global exception handlers & custom errors
+│   │   ├── repository/             Spring Data JPA Interfaces
+│   │   ├── security/               JWT generation, validation filters, user details service
+│   │   └── service/                Core business logic & transaction handling
+│   ├── src/main/resources/
+│   │   └── application.properties  App configuration & database profiles
+│   ├── Dockerfile                  Multi-stage Docker build for backend
+│   └── pom.xml                     Maven dependencies & plugins
 │
-├── frontend/                   ← React app
-│   └── src/
-│       ├── pages/Auth/         Login, SignUp
-│       ├── pages/Dashboard/    Home, Income, Expense
-│       ├── components/         All UI components
-│       ├── context/            UserContext
-│       ├── hooks/              useUserAuth
-│       └── utils/              axios, API paths, helpers
+├── frontend/                       ← React Single Page Application
+│   ├── src/
+│   │   ├── components/             Reusable UI primitives (Modals, Tables, Cards, Charts)
+│   │   ├── context/                Global Context providers (UserContext)
+│   │   ├── hooks/                  Custom application hooks (useUserAuth, useFetch)
+│   │   ├── pages/
+│   │   │   ├── Auth/               Login, Signup, Forgot Password
+│   │   │   └── Dashboard/          Home Overview, Income Management, Expense Analytics
+│   │   ├── utils/                  Axios client setup, formatting helpers, route guards
+│   │   ├── App.jsx                 Root component & router setup
+│   │   └── main.jsx                DOM entry point
+│   ├── Dockerfile                  Frontend production server configuration
+│   ├── package.json                Node dependencies & scripts
+│   └── vite.config.js              Vite bundler configuration
 │
-└── database-init.sql           ← PostgreSQL setup script
-```
-
+├── docker-compose.yml              Orchestration for Database, Backend, and Frontend
+└── database-init.sql               PostgreSQL baseline DDL and DML scripts
