@@ -4,6 +4,7 @@ import { UserContext } from '../../context/UserContext'
 import { SIDE_MENU_DATA } from '../../utils/data'
 import { getInitials } from '../../utils/helper'
 import Logo from '../Logo'
+import { BASE_URL } from '../../utils/apiPaths'
 
 const SideMenu = ({ isOpen, onClose }) => {
   const { user, clearUser } = useContext(UserContext)
@@ -51,7 +52,7 @@ const SideMenu = ({ isOpen, onClose }) => {
           <div className="px-3 py-4 border-t border-border">
             <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-surface-card">
               {user.profileImageUrl ? (
-                <img src={`http://localhost:8080${user.profileImageUrl}`} alt={user.fullName} className="w-9 h-9 rounded-lg object-cover flex-shrink-0" />
+                <img src={`${BASE_URL}${user.profileImageUrl}`} alt={user.fullName} className="w-9 h-9 rounded-lg object-cover flex-shrink-0" />
               ) : (
                 <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-xs font-display font-bold">{getInitials(user.fullName)}</span>

@@ -1,0 +1,74 @@
+# Run:  cp .env.example .env   (edit secrets)   then   docker compose up -d --build
+# Open: http://localhost:3000
+name: trackify
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-trackify}
+      POSTGRES_USER: ${POSTGRES_USER:-trackify}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-trackify_change_me}
+    # Small-footprint tuning (personal-finance workload is tiny)
+    command: >
+      postgres
+      -c shared_buffers=32MB
+      -c max_connections=30
+      -c work_mem=2MB
+      -c maintenance_work_mem=16MB
+      -c effective_cache_size=96MB
+      -c wal_compression=on
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 192m
+    cpus: 0.5
+    logging: &logging
+      driver: json-file
+      options: { max-size: "5m", max-file: "2" }
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-trackify}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-trackify}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-trackify_change_me}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:?Set APP_JWT_SECRET in .env (32+ chars)}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      # Keep DB connection pool small to save RAM
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 5
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: 1
+      SPRING_MAIN_LAZY_INITIALIZATION: "true"
+      SERVER_TOMCAT_THREADS_MAX: 20
+    volumes:
+      - uploads:/app/uploads
+    mem_limit: 384m
+    cpus: 1.0
+    logging: *logging
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ""
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    mem_limit: 32m
+    cpus: 0.25
+    logging: *logging
+
+volumes:
+  pgdata:
+  uploads:

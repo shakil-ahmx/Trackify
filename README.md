@@ -100,3 +100,16 @@ trackify/
 │
 ├── docker-compose.yml              Orchestration for Database, Backend, and Frontend
 └── database-init.sql               PostgreSQL baseline DDL and DML scripts
+
+---
+
+## 🐳 Quick Docker Start (low-resource)
+
+```bash
+cp .env.example .env        # set POSTGRES_PASSWORD and APP_JWT_SECRET (32+ chars)
+docker compose up -d --build
+```
+
+Open http://localhost:3000. Stop with `docker compose down` (data is kept in volumes; `down -v` wipes it).
+
+Memory caps: db 192 MB, backend 384 MB, frontend 32 MB (~600 MB total). Nginx serves the React build and proxies `/api` and `/uploads` to the backend, so no CORS or API URL setup is needed.
