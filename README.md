@@ -18,21 +18,6 @@ A modern, highly performant, full-stack personal finance tracking application en
 
 ---
 
-## 📑 Table of Contents
-
-- [✨ Key Features](#-key-features)
-- [🛠️ Tech Stack & Architecture](#️-tech-stack--architecture)
-- [📂 Project Structure](#-project-structure)
-- [📊 System Architecture Flow](#-system-architecture-flow)
-- [🚀 Getting Started (Local Development)](#-getting-started-local-development)
-- [🐳 Running with Docker](#-running-with-docker)
-- [🔒 API Endpoints & Security](#-api-endpoints--security)
-- [🧪 Running Tests](#-running-tests)
-- [🗺️ Roadmap](#️-roadmap)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-
----
 
 ## ✨ Key Features
 
